@@ -1,18 +1,21 @@
 public class Driver {
     public static void main(String[] args) {
-        int boardSize = 8; // Set the size of the chessboard
-        NQueens nQueens = new NQueens(boardSize);
 
-        // Solve the N-Queens problem
+        int x = 20;
+        NQueens nQueens = new NQueens(x);
+
+        // Solve and print the first solution
+        System.out.println("Possible Solution:");
         if (nQueens.solve()) {
-            System.out.println("Solution found:");
             System.out.println(nQueens);
         } else {
-            System.out.println("No solution exists for the given board size of " + boardSize);
+            System.out.println("No solution found.");
         }
 
-        // Count all possible solutions
-        int solutionsCount = nQueens.countSolutions();
-        System.out.println("Total number of solutions: " + solutionsCount);
+        // Count and print the total number of solutions
+        int totalSolutions = nQueens.countSolutions();
+        System.out.println("\nTotal number of solutions for a " + x + " by " + x + " grid: " + totalSolutions);
+
+
     }
 }

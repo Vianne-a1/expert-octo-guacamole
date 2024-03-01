@@ -6,105 +6,113 @@ public class NQueens {
         clear();
     }
 
-    private boolean addQueen(int r, int c) {
-        if (board[r][c] != 0) {
-            return false;
+    private boolean addQueen(int row, int col) {
+        int i = 0;
+        while (i < board.length) {
+            if (board[row][i] == -1 || board[i][col] == -1) {
+                return false;
+            }
+            i++;
         }
-        board[r][c] = -1;
-        updateThreatenedPositions(r, c, 1);
+
+        i = 1;
+        while (i < board.length) {
+            if (row + i < board.length && col + i < board.length && board[row + i][col + i] == -1) {
+                return false;
+            }
+            if (row - i >= 0 && col - i >= 0 && board[row - i][col - i] == -1) {
+                return false;
+            }
+            if (row + i < board.length && col - i >= 0 && board[row + i][col - i] == -1) {
+                return false;
+            }
+            if (row - i >= 0 && col + i < board.length && board[row - i][col + i] == -1) {
+                return false;
+            }
+            i++;
+        }
+
+        board[row][col] = -1;
         return true;
     }
 
-    public void clear() {
-        int size = board.length;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                board[i][j] = 0;
-            }
-        }
+    private void removeQueen(int row, int col) {
+        board[row][col] = 0;
     }
 
-    private void removeQueen(int r, int c) {
-        if (board[r][c] != 1) {
-            return;
-        }
-        board[r][c] = 0;
-        updateThreatenedPositions(r, c, 1);
-    }
-
-    private void updateThreatenedPositions(int r, int c, int value) {
-        int size = board.length;
-        for (int i = 0; i < size; i++) {
-            board[r][i] += value;
-            board[i][c] += value;
-            if (r + i < size && c + i < size) {
-                board[r + i][c + i] += value;
-            }
-            if (r - i >= 0 && c - i >= 0) {
-                board[r - i][c - i] += value;
-            }
-            if (r + i < size && c - i >= 0) {
-                board[r + i][c - i] += value;
-            }
-            if (r - i >= 0 && c + i < size) {
-                board[r - i][c + i] += value;
-            }
-        }
-    }
     public boolean solve() {
-        return solveRecursively(0);
+        clear();
+        return solve(0);
     }
 
-    private boolean solveRecursively(int col) {
-        int size = board.length;
-        if (col == size) {
-            return true;
-        }
-        for (int row = 0; row < size; row++) {
-            if (isSafe(row, col)) {
-                addQueen(row, col);
-                if (solveRecursively(col + 1)) {
-                    return true;
+    private boolean solve(int row) {
+        while (row < board.length) {
+            int col = 0;
+            while (col < board.length) {
+                if (addQueen(row, col)) {
+                    if (solve(row + 1)) {
+                        return true;
+                    }
+                    removeQueen(row, col);
                 }
-                removeQueen(row, col);
+                col++;
             }
+            return false;
         }
-        return false;
+        return true;
     }
 
     public int countSolutions() {
-        return countSolutionsRecursively(0);
+        clear();
+        return countSolutions(0);
     }
 
-    private int countSolutionsRecursively(int col) {
-        int size = board.length;
-        int count = 0;
-        if (col == size) {
+    private int countSolutions(int row) {
+        if (row == board.length) {
             return 1;
         }
-        for (int row = 0; row < size; row++) {
-            if (isSafe(row, col)) {
-                addQueen(row, col);
-                count += countSolutionsRecursively(col + 1);
+
+        int count = 0;
+        int col = 0;
+        while (col < board.length) {
+            if (addQueen(row, col)) {
+                count += countSolutions(row + 1);
                 removeQueen(row, col);
             }
+            col++;
         }
+
         return count;
     }
 
-    @Override
+    private void clear() {
+        int row = 0;
+        while (row < board.length) {
+            int col = 0;
+            while (col < board.length) {
+                board[row][col] = 0;
+                col++;
+            }
+            row++;
+        }
+    }
+
     public String toString() {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                if (board[i][j] == 1) {
+        int row = 0;
+        while (row < board.length) {
+            int col = 0;
+            while (col < board[row].length) {
+                if (board[row][col] == -1) {
                     result.append("Q ");
                 } else {
                     result.append("_ ");
                 }
+                col++;
             }
             result.append("\n");
+            row++;
         }
-        return result.toString().trim();
+        return result.toString();
     }
-  }
+}
