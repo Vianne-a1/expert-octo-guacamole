@@ -1,7 +1,7 @@
 public class Driver {
     public static void main(String[] args) {
 
-        int x = 20;
+        int x = 10;
         NQueens nQueens = new NQueens(x);
 
         // Solve and print the first solution
